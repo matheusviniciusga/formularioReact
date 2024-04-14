@@ -7,9 +7,10 @@
 body {
     width: 100%;
     height: 100vh;
-    background: linear-gradient(-45deg, #8ebbff, #5869ff, #3c46a0);
+    background: linear-gradient(90deg, #8ebbff, #5869ff, #3c46a0);
 }
 
+/*-----Header da página-----*/
 .conteudoCabecalho {
     color: white;
     padding: 2em;
@@ -39,20 +40,23 @@ nav li:hover {
     border-radius: 15px;
 }
 
+/*-----Conteúdo geral da página-----*/
 .conteudoPag {
     color: white;
-    text-align: center;
 }
 
 .conteudoTitulo {
     margin: 2.18em;
+    text-align: center;
 }
 
+/*-----Espaço do formulário-----*/
 .conteudoForm{
     display: flex;
     justify-content: space-around;
 }
 
+/*-----Formulário-----*/
 .formulario {
     display: flex;
     flex-direction: column;
@@ -63,6 +67,24 @@ nav li:hover {
     width: min-content;
 }
 
+/*-----Campos-----*/
+.campo1 {
+    display: flex;
+    justify-content: space-around;
+}
+
+.campo2 {
+    display: flex;
+    justify-content: space-around;
+}
+
+/*-----Posição do Botão-----*/
+.botaoEmbaixo {
+    display: block;
+    justify-content: flex-start;
+}
+
+/*-----Inputs e Select-----*/
 .campoInput {
     padding-bottom: 0.5em;
 }
@@ -72,6 +94,7 @@ input {
     color: black;
     outline: none;
     padding: 15px;
+    margin: 0 5px;
     border: 2px solid #5869ff;
     border-radius: 5px;
 }
@@ -84,13 +107,30 @@ label {
     color: #5869ff;
 }
 
+.campoSelect {
+    padding: 0.5em 0;
+    margin: 5px;
+}
+
+select {
+    background-color: white;
+    color: black;
+    outline: none;
+    padding: 5px 15px;
+    width: 100%;
+    border: 2px solid #5869ff;
+    border-radius: 5px;
+}
+
 form input:focus {
     background-color: #5869ff;
 }
 
+/*-----Botão de cadastro-----*/
 .divBotao {
     margin-top: 15px;
     margin-bottom: -15px;
+    text-align: center;
 }
 
 .botao {
@@ -105,4 +145,61 @@ form input:focus {
 
 .botao:hover {
     background: #3c46a0;
+}
+
+/*-----Responsividade-----*/
+@media(max-width: 450px) {
+    body {
+        margin: 0;
+        display: grid;
+    }
+
+    header h1 {
+        font-size: 15px;
+        text-align: center;
+    }
+    
+    .conteudoCabecalho {
+        padding: 0;
+        justify-content: space-between;
+    }
+
+    .conteudoPag {
+        margin: 2em;
+        flex-direction: column;
+        padding: 0;
+    }
+
+    .campo1, .campo2 {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+@media(max-width: 768px) {
+    body {
+        margin: 0;
+        display: grid;
+    }
+
+    header h1 {
+        font-size: 25px;
+        text-align: center;
+    }
+    
+    .conteudoCabecalho {
+        padding: 0;
+        justify-content: space-between;
+    }
+
+    .conteudoPag {
+        margin: 2em;
+        flex-direction: column;
+        padding: 0;
+    }
+
+    .campo1, .campo2 {
+        display: flex;
+        flex-direction: column;
+    }
 }
