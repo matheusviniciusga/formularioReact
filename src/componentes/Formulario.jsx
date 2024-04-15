@@ -1,4 +1,38 @@
+import 'https://code.jquery.com/jquery-3.7.1.min.js'
+import 'https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js'
+import { useEffect, useState } from 'react'
+import ValidCep from './ValidCep';
+
 function Formulario() {
+    const estados = [
+        'Acre', 'Alagoas', 'Amapá', 'Amazonas', 'Bahia', 'Ceará', 'Distrito Federal',
+        'Espírito Santo', 'Goiás', 'Maranhão', 'Mato Grosso', 'Mato Grosso do Sul', 'Minas Gerais',
+        'Pará', 'Paraíba', 'Paraná', 'Pernambuco', 'Piauí', 'Rio de Janeiro', 'Rio Grande do Norte',
+        'Rio Grande do Sul', 'Rondônia', 'Roraima', 'Santa Catarina', 'São Paulo', 'Sergipe', 'Tocantins'
+    ];
+    
+    const cidades = [
+        'Rio Branco', 'Maceió', 'Macapá', 'Manaus', 'Salvador', 'Fortaleza', 'Brasília',
+        'Vitória', 'Goiânia', 'São Luís', 'Cuiabá', 'Campo Grande', 'Belo Horizonte',
+        'Belém', 'João Pessoa', 'Curitiba', 'Recife', 'Teresina', 'Rio de Janeiro', 'Natal',
+        'Porto Alegre', 'Porto Velho', 'Boa Vista', 'Florianópolis', 'São Paulo', 'Aracaju', 'Palmas'
+    ];
+
+    const [endereco, setEndereco] = useState({
+        rua: '',
+        bairro: '',
+        cidade: '',
+        estado: ''
+    });
+
+    const handleAddressChange = (address) => {
+        setEndereco(address);
+    };
+
+    useEffect(() => {
+        $('#cep').mask('00000-000');
+    }, []);
+
     return(
         <>
             <section className="conteudoPag">
@@ -28,12 +62,12 @@ function Formulario() {
                         <div className="campo2">
                             <div className="subCampo1">
                                 <div className="campoInput">
-                                    <label htmlFor="endereco">Endereço</label>
-                                    <input id="endereco" type="text" placeholder="Digite o seu endereço..."/>
+                                    <label htmlFor="cep">CEP</label>
+                                    <ValidCep onAddressChange={handleAddressChange} />
                                 </div>
                                 <div className="campoInput">
-                                    <label htmlFor="cep">CEP</label>
-                                    <input id="cep" type="text" placeholder="Digite o seu CEP..."/>
+                                    <label htmlFor="endereco">Endereço</label>
+                                    <input id="endereco" type="text" placeholder="Digite o seu endereço..." value={endereco.rua}/>
                                 </div>
                             </div>
                             <div className="subCampo2">
@@ -43,22 +77,26 @@ function Formulario() {
                                 </div>
                                 <div className="campoInput">
                                     <label htmlFor="bairro">Bairro</label>
-                                    <input id="bairro" type="text" placeholder="Digite o bairro..."/>
+                                    <input id="bairro" type="text" placeholder="Digite o bairro..." value={endereco.bairro}/>
                                 </div>
                             </div>
                             <div className="subCampo3">
                                 <div className="campoSelect">
                                     <label htmlFor="cidade">Cidade </label>
-                                    <select name="cidade" id="cidade">
-                                        <option value="value1">Recife</option>
-                                        <option value="value2">Salvador</option>
+                                    <select name="cidade" id="cidade" value={endereco.cidade} onChange={(e) => setEndereco({ ...endereco, cidade: e.target.value })}>
+                                        <option value="">Selecione a cidade</option>
+                                        {cidades.map((cidade, index) => (
+                                            <option key={index} value={cidade}>{cidade}</option>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className="campoSelect">
                                     <label htmlFor="estado">Estado </label>
-                                    <select name="estado" id="estado">
-                                        <option value="value1">Pernambuco</option>
-                                        <option value="value2">Bahia</option>
+                                    <select name="estado" id="estado" value={endereco.estado} onChange={(e) => setEndereco({ ...endereco, estado: e.target.value })}>
+                                    <option value="">Selecione o estado</option>
+                                        {estados.map((estado, index) => (
+                                            <option key={index} value={estado}>{estado}</option>
+                                        ))}
                                     </select>
                                 </div>
                             </div>
