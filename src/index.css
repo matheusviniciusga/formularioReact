@@ -126,6 +126,14 @@ form input:focus {
     background-color: #5869ff;
 }
 
+/*-----Span-----*/
+#mensagem {
+    display: flex;
+    margin: 20px 0;
+    justify-content: space-around;
+    align-items: center;
+}
+
 /*-----Botão de cadastro-----*/
 .divBotao {
     margin-top: 15px;

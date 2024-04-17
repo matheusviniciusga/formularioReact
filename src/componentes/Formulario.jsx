@@ -1,33 +1,57 @@
 import 'https://code.jquery.com/jquery-3.7.1.min.js'
 import 'https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js'
 import { useEffect, useState } from 'react'
-import ValidCep from './ValidCep';
+import { useForm } from 'react-hook-form';
+//import ValidCep from './ValidCep';
 
 function Formulario() {
-    const estados = [
-        'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF',
-        'ES', 'GO', 'MA', 'MT', 'MS', 'MG',
-        'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
-        'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
-    ];
-    
-    const cidades = [
-        'Rio Branco', 'Maceió', 'Macapá', 'Manaus', 'Salvador', 'Fortaleza', 'Brasília',
-        'Vitória', 'Goiânia', 'São Luís', 'Cuiabá', 'Campo Grande', 'Belo Horizonte',
-        'Belém', 'João Pessoa', 'Curitiba', 'Recife', 'Teresina', 'Rio de Janeiro', 'Natal',
-        'Porto Alegre', 'Porto Velho', 'Boa Vista', 'Florianópolis', 'São Paulo', 'Aracaju', 'Palmas'
-    ];
-
     const [endereco, setEndereco] = useState({
-        rua: '',
-        bairro: '',
         cidade: '',
         estado: ''
     });
+    
+    const [erroCep, setErroCep] = useState(false);
+    const [mensagemErro, setMensagemErro] = useState('');
 
-    const handleAddressChange = (address) => {
-        setEndereco(address);
-    };
+    const {register, handleSubmit, setValue, setFocus} = useForm();
+
+    const onSubmit = (e) => {
+        console.log(e);
+    }
+
+    const checkCep = (e) => {
+        const cep = e.target.value;
+        console.log(cep);
+        if (cep.trim() === '') {
+            setValue('endereco', '');
+            setValue('bairro', '');
+            setValue('cidade', '');
+            setValue('estado', '');
+            setEndereco({ cidade: '', estado: '' });
+            setMensagemErro('');
+            return;
+        }
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.erro) {
+                setMensagemErro('CEP inválido. Por favor, insira um CEP válido.');
+                return;
+            }
+            console.log(data);
+            setValue('endereco', data.logradouro);
+            setValue('bairro', data.bairro);
+            setValue('cidade', data.localidade);
+            setValue('estado', data.uf);
+            setEndereco({ cidade: data.localidade, estado: data.uf });
+            setMensagemErro('');
+            setFocus('nrResi');
+        })
+        .catch(error => {
+            console.error('Erro ao buscar CEP:', error);
+            setErroCep(true);
+        });
+    }
 
     useEffect(() => {
         $('#cep').mask('00000-000');
@@ -41,62 +65,58 @@ function Formulario() {
                     <p>Insira suas informações para completar o seu cadastro.</p>
                 </div>
 
-                <span id="mensagem"></span>
+                <span id="mensagem">{mensagemErro}</span>
 
                 <div className="conteudoForm">
-                    <form className="formulario">
+                    <form className="formulario" onSubmit={handleSubmit(onSubmit)}>
                         <div className="campo1">
                             <div className="campoInput">
                                 <label htmlFor="name">Nome</label>
-                                <input id="name" type="text" placeholder="Digite o seu nome..." required/>
+                                <input id="name" type="text" placeholder="Digite o seu nome..." {...register("nome")} required/>
                             </div>
                             <div className="campoInput">
                                 <label htmlFor="password">Senha</label>
-                                <input id="password" type="text" placeholder="Digite sua senha..." required/>
+                                <input id="password" type="password" placeholder="Digite sua senha..." {...register("senha")} required/>
                             </div>
                             <div className="campoInput">
                                 <label htmlFor="email">E-mail</label>
-                                <input id="email" type="email" placeholder="Digite o seu e-mail..." required/>
+                                <input id="email" type="email" placeholder="Digite o seu e-mail..." {...register("email")} required/>
                             </div>
                         </div>
                         <div className="campo2">
                             <div className="subCampo1">
                                 <div className="campoInput">
                                     <label htmlFor="cep">CEP</label>
-                                    <ValidCep onAddressChange={handleAddressChange} />
+                                    <input id="cep" type="text" placeholder="Digite o CEP..." {...register("cep")} onBlur={checkCep} />
                                 </div>
                                 <div className="campoInput">
                                     <label htmlFor="endereco">Endereço</label>
-                                    <input id="endereco" type="text" placeholder="Digite o seu endereço..." value={endereco.rua}/>
+                                    <input id="endereco" type="text" placeholder="Digite o seu endereço..." {...register("endereco")} value={endereco.rua}/>
                                 </div>
                             </div>
                             <div className="subCampo2">
                                 <div className="campoInput">
                                     <label htmlFor="nrResi">Nrº Casa</label>
-                                    <input id="nrResi" type="number" placeholder="Digite o número..."/>
+                                    <input id="nrResi" type="number" placeholder="Digite o número..." {...register("nrResi")}/>
                                 </div>
                                 <div className="campoInput">
                                     <label htmlFor="bairro">Bairro</label>
-                                    <input id="bairro" type="text" placeholder="Digite o bairro..." value={endereco.bairro}/>
+                                    <input id="bairro" type="text" placeholder="Digite o bairro..." {...register("bairro")}/>
                                 </div>
                             </div>
                             <div className="subCampo3">
                                 <div className="campoSelect">
                                     <label htmlFor="cidade">Cidade </label>
-                                    <select name="cidade" id="cidade" value={endereco.cidade} onChange={(e) => setEndereco({ ...endereco, cidade: e.target.value })}>
+                                    <select name="cidade" id="cidade" onChange={(e) => setValue("cidade", e.target.value)} value={endereco.cidade}>
                                         <option value="">Selecione a cidade</option>
-                                        {cidades.map((cidade, index) => (
-                                            <option key={index} value={cidade}>{cidade}</option>
-                                        ))}
+                                        {endereco.cidade && <option value={endereco.cidade}>{endereco.cidade}</option>}
                                     </select>
                                 </div>
                                 <div className="campoSelect">
                                     <label htmlFor="estado">Estado </label>
-                                    <select name="estado" id="estado" value={endereco.estado} onChange={(e) => setEndereco({ ...endereco, estado: e.target.value })}>
-                                    <option value="">Selecione o estado</option>
-                                        {estados.map((estado, index) => (
-                                            <option key={index} value={estado}>{estado}</option>
-                                        ))}
+                                    <select name="estado" id="estado" onChange={(e) => setValue("estado", e.target.value)} value={endereco.estado}>
+                                        <option value="">Selecione a cidade</option>
+                                        {endereco.estado && <option value={endereco.estado}>{endereco.estado}</option>}
                                     </select>
                                 </div>
                             </div>
