@@ -57,6 +57,35 @@ function Formulario() {
         $('#cep').mask('00000-000');
     }, []);
 
+    const [senha, setSenha] = useState('');
+    const [erro, setErro] = useState('');
+
+    function handleSenhaChange(event) {
+        const novaSenha = event.target.value;
+        setSenha(novaSenha);
+
+        if (validarSenha(novaSenha) && novaSenha.length >= 6) {
+            setErro('');
+        } else {
+            setErro('A senha deve conter 6 caracteres com pelo menos uma letra e um número.');
+        }
+    }
+
+    function checkSenha() {
+        const novaSenha = event.target.value;
+        
+        if (novaSenha.trim() === '') {
+            setValue('password', '');
+            setErro('');
+            return;
+        }
+    }
+
+    function validarSenha(senha) {
+        const regex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+        return regex.test(senha);
+    }
+
     return(
         <>
             <section className="conteudoPag">
@@ -66,6 +95,9 @@ function Formulario() {
                 </div>
 
                 <span id="mensagem">{mensagemErro}</span>
+                {erro && (
+                    <span id="mensagem">{erro}</span>
+                )}
 
                 <div className="conteudoForm">
                     <form className="formulario" onSubmit={handleSubmit(onSubmit)}>
@@ -76,7 +108,7 @@ function Formulario() {
                             </div>
                             <div className="campoInput">
                                 <label htmlFor="password">Senha</label>
-                                <input id="password" type="password" placeholder="Digite sua senha..." {...register("senha")} required/>
+                                <input id="password" value={senha} type="password" placeholder="Digite sua senha..." onChange={handleSenhaChange} onBlur={checkSenha} required/>
                             </div>
                             <div className="campoInput">
                                 <label htmlFor="email">E-mail</label>
